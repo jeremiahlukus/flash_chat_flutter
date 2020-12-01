@@ -1,5 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/main_screen.dart';
 import 'package:flash_chat/screens/welcome_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -17,7 +17,7 @@ class LandingScreen extends StatelessWidget {
             if (user == null) {
               return WelcomeScreen();
             } else {
-              return ChatScreen();
+              return MainScreen();
             }
           } else {
             return Scaffold(
