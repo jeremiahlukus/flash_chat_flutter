@@ -46,7 +46,7 @@ class _ChatScreenState extends State<ChatScreen> {
               icon: Icon(Icons.exit_to_app_rounded),
               onPressed: () {
                 _auth.signOut();
-                Navigator.pop(context);
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }),
         ],
         title: Text('⚡️Chat'),

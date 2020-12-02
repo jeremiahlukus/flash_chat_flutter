@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flash_chat/components/card_component.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -16,72 +17,75 @@ class MainScreen extends StatelessWidget {
               icon: Icon(Icons.exit_to_app_rounded),
               onPressed: () {
                 _auth.signOut();
-                Navigator.pop(context);
+                Navigator.of(context).popUntil((route) => route.isFirst);
               }),
         ],
         title: Text('⚡️Chat'),
         backgroundColor: Colors.lightBlueAccent,
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Flexible(
-              child: CupertinoButton(
-                child: Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("images/chat.png"),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 10.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  CardComponent(
+                    title: "Chat",
+                    color: Colors.green[300],
+                    screenId: ChatScreen.id,
+                    imagePath: "images/chat.png",
+                    scale: 3.6,
                   ),
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                    child: Text(
-                      "Chat",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, ChatScreen.id);
-                },
+                  CardComponent(
+                    title: "Groups",
+                    color: Colors.red[400],
+                    screenId: ChatScreen.id,
+                    imagePath: "images/group.png",
+                    scale: 3.3,
+                  )
+                ],
               ),
-            ),
-            Flexible(
-              child: CupertinoButton(
-                child: Container(
-                  height: 200,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("images/group.png"),
-                      fit: BoxFit.cover,
-                    ),
-                    borderRadius: BorderRadius.circular(12),
+              Row(
+                children: [
+                  CardComponent(
+                    title: "Inbox",
+                    color: Colors.blue[200],
+                    screenId: ChatScreen.id,
+                    imagePath: "images/inbox.png",
+                    scale: 3.6,
                   ),
-                  child: Container(
-                    margin: EdgeInsets.fromLTRB(15, 15, 0, 0),
-                    child: Text(
-                      "Mindfulness",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w600),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, ChatScreen.id);
-                },
+                  CardComponent(
+                    title: "ParkStone",
+                    color: Colors.blueAccent,
+                    screenId: ChatScreen.id,
+                    imagePath: "images/home.png",
+                    scale: 3.6,
+                  )
+                ],
               ),
-            ),
-          ],
+              Row(
+                children: [
+                  CardComponent(
+                    title: "Services",
+                    color: Colors.orange[300],
+                    screenId: ChatScreen.id,
+                    imagePath: "images/builder.png",
+                    scale: 3.6,
+                  ),
+                  CardComponent(
+                    title: "For Sale",
+                    color: Colors.pink[300],
+                    screenId: ChatScreen.id,
+                    imagePath: "images/for-sale.png",
+                    scale: 3.6,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
