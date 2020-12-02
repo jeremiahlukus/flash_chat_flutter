@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/card_component.dart';
 import 'package:flash_chat/screens/chat_screen.dart';
+import 'package:flash_chat/screens/inbox_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -53,7 +54,7 @@ class MainScreen extends StatelessWidget {
                   CardComponent(
                     title: "Inbox",
                     color: Colors.blue[200],
-                    screenId: ChatScreen.id,
+                    screenId: InboxScreen.id,
                     imagePath: "images/inbox.png",
                     scale: 3.6,
                   ),

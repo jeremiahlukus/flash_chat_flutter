@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/rounded_button_component.dart';
 import 'package:flash_chat/components/wave_component.dart';
@@ -5,6 +6,7 @@ import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/main_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../constants.dart';
 
@@ -19,6 +21,8 @@ class _LoginScreenState extends State<LoginScreen> {
   String password;
   String email;
   bool showSpinner = false;
+  SharedPreferences prefs;
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -112,6 +116,19 @@ class _LoginScreenState extends State<LoginScreen> {
                       final user = await _auth.signInWithEmailAndPassword(
                           email: email, password: password);
                       if (user != null) {
+                        prefs = await SharedPreferences.getInstance();
+                        var firebaseUser = _auth.currentUser;
+                        final QuerySnapshot result = await FirebaseFirestore
+                            .instance
+                            .collection('users')
+                            .where('id', isEqualTo: firebaseUser.uid)
+                            .get();
+                        final List<DocumentSnapshot> documents = result.docs;
+                        await prefs.setString('id', documents[0].data()['id']);
+                        await prefs.setString(
+                            'nickname', documents[0].data()['nickname']);
+                        await prefs.setString(
+                            'aboutMe', documents[0].data()['aboutMe']);
                         Navigator.pushNamed(context, MainScreen.id);
                       }
                       setState(() {

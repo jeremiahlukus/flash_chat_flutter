@@ -1,10 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flash_chat/components/rounded_button_component.dart';
 import 'package:flash_chat/components/wave_component.dart';
 import 'package:flash_chat/constants.dart';
 import 'package:flash_chat/screens/main_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class RegistrationScreen extends StatefulWidget {
   static String id = '/registration';
@@ -15,8 +18,15 @@ class RegistrationScreen extends StatefulWidget {
 class _RegistrationScreenState extends State<RegistrationScreen> {
   final _auth = FirebaseAuth.instance;
   String password;
+  String displayName;
   String email;
   bool showSpinner = false;
+  SharedPreferences prefs;
+
+  setPrefs() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -77,6 +87,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   height: 48.0,
                 ),
                 TextField(
+                  textAlign: TextAlign.center,
+                  onChanged: (value) {
+                    displayName = value;
+                  },
+                  decoration: kInputDecoration.copyWith(
+                      hintText: 'Enter your display name'),
+                ),
+                TextField(
                     keyboardType: TextInputType.emailAddress,
                     textAlign: TextAlign.center,
                     onChanged: (value) {
@@ -111,12 +129,34 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           await _auth.createUserWithEmailAndPassword(
                               email: email, password: password);
                       if (newUser != null) {
+                        var firebaseUser = _auth.currentUser;
+                        FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(firebaseUser.uid)
+                            .set({
+                          'nickname': displayName,
+                          'id': firebaseUser.uid,
+                          'createdAt':
+                              DateTime.now().millisecondsSinceEpoch.toString(),
+                          'chattingWith': null
+                        });
+                        prefs = await SharedPreferences.getInstance();
+                        // Write data to local
+                        var currentUser = firebaseUser;
+                        print(currentUser);
+                        await prefs.setString('id', currentUser.uid);
+                        await prefs.setString('nickname', displayName);
+                        Fluttertoast.showToast(msg: "Registration success");
+                        setState(() {
+                          showSpinner = false;
+                        });
                         Navigator.pushNamed(context, MainScreen.id);
                       }
+                    } catch (e) {
+                      Fluttertoast.showToast(msg: "Registration failed");
                       setState(() {
                         showSpinner = false;
                       });
-                    } catch (e) {
                       print(e);
                     }
                   },
